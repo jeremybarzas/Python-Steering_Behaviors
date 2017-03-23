@@ -40,4 +40,8 @@ class Agent(object):
 
     def print_info(self):
         '''print agents info'''
+        print "\nPostion:"
         self.position.print_info()
+        print "Velocity: "
+        self.velocity.print_info()
+        
