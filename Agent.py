@@ -44,6 +44,3 @@ class Agent(object):
         self.position.print_info()
         print "Velocity: "
         self.velocity.print_info()
-        print "Heading: "
-        self.heading.print_info()
-        
