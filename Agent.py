@@ -10,12 +10,12 @@ class Agent(object):
         self.position = pos
         self.velocity = Vector2([0, 0])
         self.maxvelocity = 1
-        self.heading = None
+        self.heading = Vector2([0, 0])
         self.target = None
 
     def seek(self, target):
         '''seek the target'''
-        tmpvec = target.position.substract(self.position)
+        tmpvec = target.position.subtract(self.position)
         tmpvec = tmpvec.normalize()
         tmpvec = tmpvec.scalarmult(self.maxvelocity)
         seekforce = tmpvec.subtract(self.velocity)
@@ -23,7 +23,7 @@ class Agent(object):
 
     def flee(self, target):
         '''flee the target'''
-        tmpvec = self.position.substract(target.position)
+        tmpvec = self.position.subtract(target.position)
         tmpvec = tmpvec.normalize()
         tmpvec = tmpvec.scalarmult(self.maxvelocity)
         fleeforce = tmpvec.subtract(self.velocity)
@@ -44,4 +44,6 @@ class Agent(object):
         self.position.print_info()
         print "Velocity: "
         self.velocity.print_info()
+        print "Heading: "
+        self.heading.print_info()
         
