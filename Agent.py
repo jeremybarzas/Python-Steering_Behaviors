@@ -9,27 +9,29 @@ class Agent(object):
     def __init__(self, pos):
         '''constructor'''
         self.position = pos
-        self.velocity = Vector2([0, 0])
+        self.velocity = Vector2(0, 1)
         self.maxvelocity = 1
-        self.heading = Vector2([0, 0])
+        self.heading = Vector2(0, 0)
         self.target = None
         self.forces = []
 
     def seek(self, target):
         '''seek the target'''
-        tmpvec = target.position - self.position
-        tmpvec = tmpvec.normalise()
-        tmpvec = tmpvec * self.maxvelocity
-        seekforce = tmpvec - self.velocity
+        currvelo = self.velocity
+        displacement = target - self.position
+        directiontotarget = displacement.normalise()
+        velo = directiontotarget * self.maxvelocity
+        seekforce = velo - currvelo
         self.forces.append(seekforce)
         return seekforce
 
     def flee(self, target):
         '''flee the target'''
-        tmpvec = self.position - target.position
-        tmpvec = tmpvec.normalise()
-        tmpvec = tmpvec * self.maxvelocity
-        fleeforce = tmpvec - self.velocity
+        currvelo = self.velocity
+        displacement = self.position - target
+        directiontotarget = displacement.normalise()
+        velo = directiontotarget * self.maxvelocity
+        fleeforce = velo - currvelo
         self.forces.append(fleeforce)
         return fleeforce
 
@@ -39,8 +41,8 @@ class Agent(object):
         # Start with a random target on the edge of the
         # sphere with a set radius around the agent
         # randomize the jitter vector
-        wander_jitter = Vector2([random.randrange(-1, 1), random.randrange(-1, 1)])
-        wander_jitter.print_info()
+        wander_jitter = Vector2(random.randrange(-1, 1), random.randrange(-1, 1))
+        print wander_jitter
 
         # Add a randomised vector to the target, with a
         # magnitude specified by a jitter amount
@@ -65,11 +67,19 @@ class Agent(object):
             self.heading = self.velocity.normalise()
         self.forces = []
 
-    def print_info(self):
+    def __str__(self):
         '''print agents info'''
-        print "Postion:"
-        self.position.print_info()
-        print "Velocity: "
-        self.velocity.print_info()
-        print "Heading: "
-        self.heading.print_info()
+        return "Postion: " + str(self.position) + "\nVelocity: " + str(self.velocity)
+
+def test(agent):
+    sf = agent.seek(Vector2(1, 0))
+    print "\nSeek Force: " + str(sf)
+
+    print "\nFlee Force???: " + str(sf * -1)
+
+    ff = agent.flee(Vector2(1, 0))
+    print "\nFlee Force: " + str(ff)
+
+if __name__ == '__main__':
+    agent = Agent(Vector2(0, 0))
+    test(agent)
