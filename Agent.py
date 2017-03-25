@@ -6,14 +6,14 @@ from Vector2 import Vector2
 class Agent(object):
     '''Agent object'''
 
-    def __init__(self, pos):
+    def __init__(self, posx, posy):
         '''constructor'''
-        self.position = pos
+        self.position = Vector2(posx, posy)
         self.velocity = Vector2(0, 0)
         self.maxvelocity = 1
         self.heading = Vector2(0, 0)
-        self.target = None
         self.forces = []
+        self.previousforces = []
 
     def seek(self, target):
         '''seek the target'''
@@ -73,16 +73,22 @@ class Agent(object):
 
     def __str__(self):
         '''print agents info'''
-        return "Postion: " + str(self.position) + "\nVelocity: " + str(self.velocity)
+        return "Postion: " + str(self.position)
 
 def test(testagent):
     '''testing in place'''
-    sf = testagent.seek(Vector2(1, 0))
-    print "\nSeek Force: " + str(sf)
+    print "\nBEGIN SELFTEST\n"
+    print testagent
+    print "Seek Force: " + str(testagent.seek(Vector2(1, 0)))
+    testagent.apply_forces(1)
+    print testagent
+    print "\n" + str(testagent)
+    print "Flee Force: " + str(testagent.flee(Vector2(1, 0)))
+    testagent.apply_forces(1)
+    print testagent
+    print "\nEND SELFTEST\n"
 
-    ff = agent.flee(Vector2(1, 0))
-    print "\nFlee Force: " + str(ff)
 
 if __name__ == '__main__':
-    agent = Agent(Vector2(0, 0))
+    agent = Agent(0, 0)
     test(agent)
