@@ -9,7 +9,7 @@ class Agent(object):
     def __init__(self, pos):
         '''constructor'''
         self.position = pos
-        self.velocity = Vector2(0, 1)
+        self.velocity = Vector2(0, 0)
         self.maxvelocity = 1
         self.heading = Vector2(0, 0)
         self.target = None
@@ -27,23 +27,23 @@ class Agent(object):
 
     def flee(self, target):
         '''flee the target'''
-        fleeforce = (self.seek(target) * -1)
-        return fleeforce
+        # dafuq
+        return self.seek(target) * -1
 
-        currentvelocity = self.velocity
-        displacement = self.position - target
-        directiontotarget = displacement.normalise()
-        newvelocity = directiontotarget * self.maxvelocity
-        fleeforce = newvelocity - currentvelocity
-        self.forces.append(fleeforce)
-        return fleeforce
+        # currentvelocity = self.velocity
+        # displacement = self.position - target
+        # directiontotarget = displacement.normalise()
+        # newvelocity = directiontotarget * self.maxvelocity
+        # fleeforce = newvelocity - currentvelocity
+        # self.forces.append(fleeforce)
+        # return fleeforce
 
     def wander(self):
         '''wander around aimlessly'''
 
         # Start with a random target on the edge of the
         # sphere with a set radius around the agent
-        
+
         # randomize the jitter vector
         wander_jitter = Vector2(random.randrange(-1, 1), random.randrange(-1, 1))
         print wander_jitter
@@ -75,11 +75,10 @@ class Agent(object):
         '''print agents info'''
         return "Postion: " + str(self.position) + "\nVelocity: " + str(self.velocity)
 
-def test(agent):
-    sf = agent.seek(Vector2(1, 0))
+def test(testagent):
+    '''testing in place'''
+    sf = testagent.seek(Vector2(1, 0))
     print "\nSeek Force: " + str(sf)
-
-    print "\nFlee Force???: " + str(sf * -1)
 
     ff = agent.flee(Vector2(1, 0))
     print "\nFlee Force: " + str(ff)
