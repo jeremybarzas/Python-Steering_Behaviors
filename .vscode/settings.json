@@ -1,0 +1,5 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "python.linting.pep8Path": "C:/Python27/Scripts/pylint.exe",
+    "python.pythonPath": "C:/Python27/python.exe"
+}

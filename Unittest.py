@@ -5,8 +5,9 @@ from Agent import Agent
 
 def unit_test():
     '''Unit test of steering behaviors'''
-    jeremy = Agent(Vector2(0, 0))
-    target = Agent(Vector2(3, 0))
+    # test 1
+    jeremy = Agent(Vector2(100,100))
+    target = Agent(Vector2(300, 100))
     print "\nSeek Start"
     print jeremy
     for i in range(0, 3):
@@ -29,6 +30,13 @@ def unit_test():
         print jeremy
     print "\nFlee End"
     print jeremy
+    # test 2
+    agent = Agent(Vector2(0, 0))
+    sf = agent.seek(Vector2(1, 0))
+    print "\nSeek Force: " + str(sf)
+    print "\nFlee Force???: " + str(sf * -1)
+    ff = agent.flee(Vector2(1, 0))
+    print "\nFlee Force: " + str(ff)
 
 
 if __name__ == "__main__":

@@ -17,21 +17,24 @@ class Agent(object):
 
     def seek(self, target):
         '''seek the target'''
-        currvelo = self.velocity
+        currentvelocity = self.velocity
         displacement = target - self.position
         directiontotarget = displacement.normalise()
-        velo = directiontotarget * self.maxvelocity
-        seekforce = velo - currvelo
+        newvelocity = directiontotarget * self.maxvelocity
+        seekforce = newvelocity - currentvelocity
         self.forces.append(seekforce)
         return seekforce
 
     def flee(self, target):
         '''flee the target'''
-        currvelo = self.velocity
+        fleeforce = (self.seek(target) * -1)
+        return fleeforce
+
+        currentvelocity = self.velocity
         displacement = self.position - target
         directiontotarget = displacement.normalise()
-        velo = directiontotarget * self.maxvelocity
-        fleeforce = velo - currvelo
+        newvelocity = directiontotarget * self.maxvelocity
+        fleeforce = newvelocity - currentvelocity
         self.forces.append(fleeforce)
         return fleeforce
 
@@ -40,6 +43,7 @@ class Agent(object):
 
         # Start with a random target on the edge of the
         # sphere with a set radius around the agent
+        
         # randomize the jitter vector
         wander_jitter = Vector2(random.randrange(-1, 1), random.randrange(-1, 1))
         print wander_jitter
