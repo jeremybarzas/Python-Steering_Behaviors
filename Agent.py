@@ -40,13 +40,14 @@ class Agent(object):
 
     def wander(self):
         '''wander around aimlessly'''
+        # randomize the jitter vector
+        wandertarget = Vector2(random.randrange(-2, 2), random.randrange(-2, 2))
+        wanderforce = self.seek(wandertarget)
+        self.forces.append(wanderforce)
+        return wanderforce
 
         # Start with a random target on the edge of the
         # sphere with a set radius around the agent
-
-        # randomize the jitter vector
-        wander_jitter = Vector2(random.randrange(-1, 1), random.randrange(-1, 1))
-        print wander_jitter
 
         # Add a randomised vector to the target, with a
         # magnitude specified by a jitter amount
@@ -56,10 +57,6 @@ class Agent(object):
 
         # Add the agents heading, multiplied by an
         # distance, to the target
-
-        wanderforce = wander_jitter
-        self.forces.append(wanderforce)
-        return wanderforce
 
     def apply_forces(self, deltatime):
         '''apply forces to agent'''
