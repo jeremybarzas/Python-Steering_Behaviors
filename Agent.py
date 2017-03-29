@@ -30,33 +30,15 @@ class Agent(object):
         # dafuq
         return self.seek(target) * -1
 
-        # currentvelocity = self.velocity
-        # displacement = self.position - target
-        # directiontotarget = displacement.normalise()
-        # newvelocity = directiontotarget * self.maxvelocity
-        # fleeforce = newvelocity - currentvelocity
-        # self.forces.append(fleeforce)
-        # return fleeforce
-
-    def wander(self):
-        '''wander around aimlessly'''
-        # randomize the jitter vector
-        wandertarget = Vector2(random.randrange(-2, 2), random.randrange(-2, 2))
-        wanderforce = self.seek(wandertarget)
-        self.forces.append(wanderforce)
-        return wanderforce
-
-        # Start with a random target on the edge of the
-        # sphere with a set radius around the agent
-
-        # Add a randomised vector to the target, with a
-        # magnitude specified by a jitter amount
-
-        # Bring the target back to the radius of the
-        # sphere by normalising it and scaling by the radius
-
-        # Add the agents heading, multiplied by an
-        # distance, to the target
+        # This is the same code as seek but the displacement calculation does self.position first,
+        # instead of target first and did not give the correct return value
+            # currentvelocity = self.velocity
+            # displacement = self.position - target
+            # directiontotarget = displacement.normalise()
+            # newvelocity = directiontotarget * self.maxvelocity
+            # fleeforce = newvelocity - currentvelocity
+            # self.forces.append(fleeforce)
+            # return fleeforce
 
     def apply_forces(self, deltatime):
         '''apply forces to agent'''
