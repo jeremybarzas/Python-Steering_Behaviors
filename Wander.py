@@ -9,11 +9,12 @@ class Wander(object):
         ''' constructor '''
         self.wander_radius = 0
         self.wander_distance = 0
-        self.wander_jitter = Vector2(0, 0)
+        self.wander_jitter = 0
         self.previous_wander = Vector2(0, 0)
 
-    def wander(self):
+    def wander(self, radius, distance, jitter, strength):
         ''' returns a wander force '''
+
         # Start with a random target on the edge of the
         # sphere with a set radius around the agent
 

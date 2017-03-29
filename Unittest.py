@@ -1,42 +1,27 @@
-'''Unit test of steering behaviors'''
+'''Unit testing for astar algorithim'''
 
-from Vector2 import Vector2
-from Agent import Agent
+import pygame
 
 def unit_test():
-    '''Unit test of steering behaviors'''
-    # test 1
-    jeremy = Agent(100, 100)
-    target = Agent(300, 100)
-    print "\nSeek Start"
-    print jeremy
-    for i in range(0, 3):
-        print "\nmove number: " + str(i + 1)
-        jeremy.seek(target.position)
-        jeremy.apply_forces(1)
-        print jeremy
-    print "\nSeek End"
-    print jeremy
-    if jeremy.position == target.position:
-        print "\njeremy has reached target"
-    else:
-        print "\njeremy has not reached target\n"
-    print "\nFlee Start"
-    print jeremy
-    for i in range(0, 3):
-        print "\nmove number: " + str(i + 1)
-        jeremy.flee(target.position)
-        jeremy.apply_forces(1)
-        print jeremy
-    print "\nFlee End"
-    print jeremy
-    # test 2
-    agent = Agent(0, 0)
-    sf = agent.seek(Vector2(1, 0))
-    print "\nSeek Force: " + str(sf)
-    print "\nFlee Force???: " + str(sf * -1)
-    ff = agent.flee(Vector2(1, 0))
-    print "\nFlee Force: " + str(ff)
+    '''unit test'''
+    print "\nBegin unit test\n"
+    pygame.init()
+    # set caption in window bar
+    pygame.display.set_caption("Steering Behaviors")
+    # set window size
+    screen = pygame.display.set_mode((800, 600))
+    done = False
+    while not done:
+        # checking events that happen
+        for event in pygame.event.get():  # User did something
+            if event.type == pygame.QUIT:  # If user clicked close
+                done = True
+        # draw these thigns to screen
+        screen.fill(white)
+
+        # update function
+        pygame.display.flip()
+    pygame.quit()
 
 
 if __name__ == "__main__":
