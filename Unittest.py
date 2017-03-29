@@ -18,7 +18,6 @@ def unit_test():
                 done = True
         # draw these thigns to screen
         screen.fill(white)
-
         # update function
         pygame.display.flip()
     pygame.quit()
