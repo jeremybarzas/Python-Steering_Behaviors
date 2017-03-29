@@ -4,7 +4,6 @@ import pygame
 
 def unit_test():
     '''unit test'''
-    print "\nBegin unit test\n"
     pygame.init()
     # set caption in window bar
     pygame.display.set_caption("Steering Behaviors")
