@@ -57,11 +57,7 @@ def test(testagent):
     '''testing in place'''
     print "\nBEGIN SELFTEST\n"
     print testagent
-    print "Seek Force: " + str(testagent.seek(Vector2(2, 2)))
-    testagent.apply_forces(1)
-    print testagent
-    print "\n" + str(testagent)
-    print "Flee Force: " + str(testagent.flee(Vector2(2, 2)))
+    print "Seek Force: " + str(testagent.seek(Vector2(1, 0)))
     testagent.apply_forces(1)
     print testagent
     print "\nEND SELFTEST\n"
