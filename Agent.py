@@ -1,5 +1,6 @@
 '''Agent object'''
 
+import pygame
 from Vector2 import Vector2
 
 class Agent(object):
@@ -9,7 +10,7 @@ class Agent(object):
         '''constructor'''
         self.position = Vector2(posx, posy)
         self.velocity = Vector2(0, 0)
-        self.maxvelocity = 1
+        self.maxvelocity = 100
         self.heading = Vector2(0, 0)
         self.forces = []
         self.previousforces = []
@@ -26,43 +27,60 @@ class Agent(object):
 
     def flee(self, target):
         '''flee the target'''
-        # dafuq
-        return self.seek(target) * -1
-
-        # This is the same code as seek but the displacement calculation does self.position first,
-        # instead of target first and did not give the correct return value
-            # currentvelocity = self.velocity
-            # displacement = self.position - target
-            # directiontotarget = displacement.normalise()
-            # newvelocity = directiontotarget * self.maxvelocity
-            # fleeforce = newvelocity - currentvelocity
-            # self.forces.append(fleeforce)
-            # return fleeforce
+        currentvelocity = self.velocity
+        displacement = target - self.position
+        directiontotarget = displacement.normalise()
+        newvelocity = directiontotarget * self.maxvelocity
+        seekforce = newvelocity - currentvelocity
+        fleeforce = seekforce * -1
+        self.forces.append(fleeforce)
+        return fleeforce
 
     def apply_forces(self, deltatime):
         '''apply forces to agent'''
+        tmpforce = Vector2(0, 0)
         for force in self.forces:
-            force = force * deltatime
-            self.velocity = self.velocity + force
-            velocity = self.velocity * deltatime
-            self.position = self.position + velocity
-            self.heading = self.velocity.normalise()
+            tmpforce = tmpforce + force
+        tmpforce = tmpforce * deltatime
+        self.velocity = self.velocity + tmpforce
+        currmag = self.velocity.magnitude()
+        if currmag > self.maxvelocity:
+            self.velocity = self.velocity.normalise() * self.maxvelocity
+        velocity = self.velocity * deltatime
+        self.position = self.position + velocity
+        self.heading = self.velocity.normalise()
+        self.clear_forces()
+
+    def clear_forces(self):
+        ''' clear the forces list '''
+        for force in self.forces:
+            self.forces.pop()
         self.forces = []
 
     def __str__(self):
         '''print agents info'''
         return "Postion: " + str(self.position)
 
-def test(testagent):
+    def draw(self, surface, color):
+        ''' draws agent to screen as triangle '''
+        centeroid = self.position
+        points = [(centeroid.getx(), centeroid.gety() - 5), (centeroid.getx() - 5, centeroid.gety() + 5), (centeroid.getx() + 5, centeroid.gety() + 5)]
+        pygame.draw.polygon(surface, color, points, 2)
+        return 1
+
+
+def test():
     '''testing in place'''
     print "\nBEGIN SELFTEST\n"
-    print testagent
-    print "Seek Force: " + str(testagent.seek(Vector2(1, 0)))
-    testagent.apply_forces(1)
-    print testagent
+    red = (255, 0, 0)
+    black = (0, 0, 0)
+    screen_width = 800
+    screen_height = 600
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    testagent = Agent((screen_width / 2), (screen_height / 2))
+    testagent.draw(screen, red)
     print "\nEND SELFTEST\n"
 
 
 if __name__ == '__main__':
-    agent = Agent(0, 0)
-    test(agent)
+    test()

@@ -8,6 +8,22 @@ class Vector2(object):
         '''constructor'''
         self.value = [valx, valy]
 
+    def setx(self, xval):
+        ''' set the x value '''
+        self.value[0] = xval
+
+    def getx(self):
+        ''' get the x value '''
+        return self.value[0]
+
+    def sety(self, yval):
+        ''' set the y value '''
+        self.value[1] = yval
+
+    def gety(self):
+        ''' get the y value '''
+        return self.value[1]
+
     def __add__(self, other):
         '''add two vector2s'''
         tmp0 = self.value[0] + other.value[0]
