@@ -6,14 +6,20 @@ from Vector2 import Vector2
 class Agent(object):
     '''Agent object'''
 
-    def __init__(self, posx, posy):
+    def __init__(self, posx, posy, color):
         '''constructor'''
         self.position = Vector2(posx, posy)
         self.velocity = Vector2(0, 0)
-        self.maxvelocity = 100
+        self.maxvelocity = 200
         self.heading = Vector2(0, 0)
         self.forces = []
         self.previousforces = []
+        self.surface = pygame.Surface((20, 20))
+        sur = self.surface
+        sur.fill((0, 0, 0))
+        currpos = Vector2(sur.get_width() / 2, sur.get_height() / 2)
+        points = [(currpos[0] - 1, currpos[1] - 6), (currpos[0] - 6, currpos[1] + 4), (currpos[0] + 4, currpos[1] + 4)]
+        pygame.draw.polygon(self.surface, color, points, 2)
 
     def seek(self, target):
         '''seek the target'''
@@ -61,26 +67,11 @@ class Agent(object):
         '''print agents info'''
         return "Postion: " + str(self.position)
 
-    def draw(self, surface, color):
+    def draw(self, surface):
         ''' draws agent to screen as triangle '''
-        centeroid = self.position
-        points = [(centeroid.getx(), centeroid.gety() - 5), (centeroid.getx() - 5, centeroid.gety() + 5), (centeroid.getx() + 5, centeroid.gety() + 5)]
-        pygame.draw.polygon(surface, color, points, 2)
-        return 1
-
-
-def test():
-    '''testing in place'''
-    print "\nBEGIN SELFTEST\n"
-    red = (255, 0, 0)
-    black = (0, 0, 0)
-    screen_width = 800
-    screen_height = 600
-    screen = pygame.display.set_mode((screen_width, screen_height))
-    testagent = Agent((screen_width / 2), (screen_height / 2))
-    testagent.draw(screen, red)
-    print "\nEND SELFTEST\n"
-
+        currpos = self.position
+        surface.blit(self.surface, (int(currpos.getx()), int(currpos.gety())))
 
 if __name__ == '__main__':
-    test()
+    import Main
+    Main.main()
