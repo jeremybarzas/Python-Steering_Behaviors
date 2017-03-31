@@ -11,17 +11,32 @@ class Agent(object):
     def __init__(self, posx, posy, linecolor, blitcolor):
         '''constructor'''
         self.position = Vector2(posx, posy)
+        self.acceleration = Vector2(0, 0)
         self.velocity = Vector2(0, 0)
-        self.maxvelocity = 750
+        self.maxvelocity = 250
         self.heading = Vector2(0, 0)
+        self.force = Vector2(0, 0)
         self.forces = []
         self.previousforces = []
         self.surface = pygame.Surface((20, 20))
-        sur = self.surface
-        sur.fill(blitcolor)
-        currpos = Vector2(sur.get_width() / 2, sur.get_height() / 2)
-        points = [(currpos[0] - 1, currpos[1] - 6), (currpos[0] - 6, currpos[1] + 4), (currpos[0] + 4, currpos[1] + 4)]
+        surfacepos = Vector2(self.surface.get_width() / 2, self.surface.get_height() / 2)
+        points = [(surfacepos[0] - 1, surfacepos[1] - 6), (surfacepos[0] - 6, surfacepos[1] + 4), (surfacepos[0] + 4, surfacepos[1] + 4)]
         pygame.draw.polygon(self.surface, linecolor, points, 2)
+        self.wanderangle = math.pi/2.0
+
+    def updateagent(self, deltatime):
+        ''' update the agent '''
+        self.acceleration = self.force
+        self.velocity += self.acceleration * deltatime
+        currmag = self.velocity.magnitude()
+        if currmag > self.maxvelocity:
+            self.velocity = self.velocity.normalise() * self.maxvelocity
+        self.position += self.velocity * deltatime
+        self.heading = self.velocity.normalise()
+
+    def add_force(self, force):
+        ''' add a force to the agents velocity '''
+        self.force += force
 
     def seek(self, target):
         '''seek the target'''
@@ -30,7 +45,6 @@ class Agent(object):
         directiontotarget = displacement.normalise()
         newvelocity = directiontotarget * self.maxvelocity
         seekforce = newvelocity - currentvelocity
-        self.forces.append(seekforce)
         return seekforce
 
     def flee(self, target):
@@ -41,29 +55,27 @@ class Agent(object):
         newvelocity = directiontotarget * self.maxvelocity
         seekforce = newvelocity - currentvelocity
         fleeforce = seekforce * -1
-        self.forces.append(fleeforce)
         return fleeforce
 
     def wander(self, distance, radius):
         ''' wander around aimlessly '''
-        # Start with a random target on the edge of the
-        # sphere with a set radius around the agent
-
-        # Add a randomised vector to the target, with a
-        # magnitude specified by a jitter amount
-
-        # Bring the target back to the radius of the
-        # sphere by normalising it and scaling by the radius
-
-        # Add the agents heading, multiplied by an
-        # distance, to the target
-
         center_circle = self.velocity.normalise()
         center_circle = center_circle * distance
-        displacement = Vector2(0, 1)
-        wanderangle = wanderangle + (random.randrange(0.0, 1.0) * 1) - (1 * .5)
-        displacement.setx(math.cos(wanderangle) * displacement.magnitude())
-        displacement.sety(math.sin(wanderangle) * displacement.magnitude())
+
+        displacement = Vector2(0, 1) * radius
+
+
+        self.wanderangle += (random.randrange(0.0, 1.0) * 1) - (1 * .5)
+
+        displacement.setx(math.cos(self.wanderangle) * displacement.magnitude())
+        displacement.sety(math.sin(self.wanderangle) * displacement.magnitude())
+
+        wanderforce = center_circle + displacement
+        return wanderforce
+
+    def clear_force(self):
+        ''' clear the force '''
+        self.force = Vector2(0, 0)
 
     def apply_forces(self, deltatime):
         '''apply forces to agent'''
@@ -78,13 +90,6 @@ class Agent(object):
         velocity = self.velocity * deltatime
         self.position = self.position + velocity
         self.heading = self.velocity.normalise()
-        self.clear_forces()
-
-    def clear_forces(self):
-        ''' clear the forces list '''
-        for force in self.forces:
-            self.forces.pop()
-        self.forces = []
 
     def __str__(self):
         '''print agents info'''
@@ -93,10 +98,15 @@ class Agent(object):
     def draw(self, surface):
         ''' draws agent to screen as triangle '''
         currpos = self.position
-        surface.blit(self.surface, (int(currpos.getx()), int(currpos.gety())))
+        # self.heading = self.velocity.normalise()
+        angle = math.atan2(self.heading.gety(), self.heading.getx()) * 180 / math.pi
+        if angle < 0:
+            angle = 360 + angle
+        print self.heading.gety(), ',', self.heading.getx()
+        newsurf = pygame.transform.rotate(self.surface, -angle)
+        surface.blit(newsurf, (int(currpos.getx()), int(currpos.gety())))
 
 
 if __name__ == '__main__':
     import Main
     Main.main()
-    

@@ -35,6 +35,10 @@ def main():
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
                 done = True
+            # check to see if a button was pressed
+            if event.type == pygame.KEYDOWN:
+                if event.button == pygame.K_SPACE:
+                    testagent.velocity = Vector2(0, 0)
             # check to see if mouse button was pressed
             if event.type == pygame.MOUSEBUTTONDOWN:
                 clickpos = pygame.mouse.get_pos()
@@ -48,26 +52,22 @@ def main():
                     fleetarget = Vector2(clickpos[0], clickpos[1])
                     leftclick = False
                     rightclick = True
+                elif event.button == 2:
+                    testagent.add_force(testagent.wander(50, 300))
+                    leftclick = False
+                    rightclick = False
         # fill screen with black
         screen.fill(bgcolor)
-        # draw agent to screen as a red triangle
+        # draw agent to screen
         testagent.draw(screen)
-        # logic to control wether it seeks or fless
+        # logic to control wether it seeks or flees
         if leftclick:
-            testagent.seek(seektarget)
+            testagent.add_force(testagent.seek(seektarget))
         elif rightclick:
-            testagent.flee(fleetarget)
+            testagent.add_force(testagent.flee(fleetarget))
         # apply forces calcualated by steering behaviors
-        testagent.apply_forces(delta)
-         # out of bounds check
-        if testagent.position.getx() >= screen_width:
-            testagent.position.setx(screen_width - 10)
-        if testagent.position.getx() <= 0:
-            testagent.position.setx(0 + 10)
-        if testagent.position.gety() >= screen_height:
-            testagent.position.sety(screen_height - 10)
-        if testagent.position.gety() <= 0:
-            testagent.position.sety(0 + 10)
+        testagent.updateagent(delta)
+        testagent.clear_force()
         # update function
         pygame.display.flip()
     pygame.quit()
