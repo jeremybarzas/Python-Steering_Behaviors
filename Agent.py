@@ -1,6 +1,8 @@
 '''Agent object'''
 
 import pygame
+import math
+import random
 from Vector2 import Vector2
 
 class Agent(object):
@@ -42,6 +44,27 @@ class Agent(object):
         self.forces.append(fleeforce)
         return fleeforce
 
+    def wander(self, distance, radius):
+        ''' wander around aimlessly '''
+        # Start with a random target on the edge of the
+        # sphere with a set radius around the agent
+
+        # Add a randomised vector to the target, with a
+        # magnitude specified by a jitter amount
+
+        # Bring the target back to the radius of the
+        # sphere by normalising it and scaling by the radius
+
+        # Add the agents heading, multiplied by an
+        # distance, to the target
+
+        center_circle = self.velocity.normalise()
+        center_circle = center_circle * distance
+        displacement = Vector2(0, 1)
+        wanderangle = wanderangle + (random.randrange(0.0, 1.0) * 1) - (1 * .5)
+        displacement.setx(math.cos(wanderangle) * displacement.magnitude())
+        displacement.sety(math.sin(wanderangle) * displacement.magnitude())
+
     def apply_forces(self, deltatime):
         '''apply forces to agent'''
         tmpforce = Vector2(0, 0)
@@ -72,6 +95,8 @@ class Agent(object):
         currpos = self.position
         surface.blit(self.surface, (int(currpos.getx()), int(currpos.gety())))
 
+
 if __name__ == '__main__':
     import Main
     Main.main()
+    
