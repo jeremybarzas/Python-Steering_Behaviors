@@ -61,21 +61,13 @@ def main():
         testagent.apply_forces(delta)
          # out of bounds check
         if testagent.position.getx() >= screen_width:
-            testagent.clear_forces()
             testagent.position.setx(screen_width - 10)
-            testagent.clear_forces()
         if testagent.position.getx() <= 0:
-            testagent.clear_forces()
             testagent.position.setx(0 + 10)
-            testagent.clear_forces()
         if testagent.position.gety() >= screen_height:
-            testagent.clear_forces()
             testagent.position.sety(screen_height - 10)
-            testagent.clear_forces()
         if testagent.position.gety() <= 0:
-            testagent.clear_forces()
             testagent.position.sety(0 + 10)
-            testagent.clear_forces()
         # update function
         pygame.display.flip()
     pygame.quit()
