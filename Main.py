@@ -17,13 +17,13 @@ def main():
     black = (0, 0, 0)
     white = (255, 255, 255)
     gray = (125, 125, 125)
-    darkgray = (60, 60, 60)
-    # set window size
+    bgcolor = (9, 45, 223)
+    darkgray = (15, 15, 15)
     screen_width = 800
     screen_height = 600
     screen = pygame.display.set_mode((screen_width, screen_height))
     # agent to be used
-    testagent = Agent((screen_width / 2), (screen_height / 2), pink)
+    testagent = Agent((screen_width / 2), (screen_height / 2), pink, darkgray)
     # varaibles for while loop
     clock = pygame.time.Clock()
     done = False
@@ -49,7 +49,7 @@ def main():
                     leftclick = False
                     rightclick = True
         # fill screen with black
-        screen.fill(darkgray)
+        screen.fill(bgcolor)
         # draw agent to screen as a red triangle
         testagent.draw(screen)
         # logic to control wether it seeks or fless
@@ -61,13 +61,21 @@ def main():
         testagent.apply_forces(delta)
          # out of bounds check
         if testagent.position.getx() >= screen_width:
+            testagent.clear_forces()
             testagent.position.setx(screen_width - 10)
+            testagent.clear_forces()
         if testagent.position.getx() <= 0:
+            testagent.clear_forces()
             testagent.position.setx(0 + 10)
+            testagent.clear_forces()
         if testagent.position.gety() >= screen_height:
+            testagent.clear_forces()
             testagent.position.sety(screen_height - 10)
+            testagent.clear_forces()
         if testagent.position.gety() <= 0:
+            testagent.clear_forces()
             testagent.position.sety(0 + 10)
+            testagent.clear_forces()
         # update function
         pygame.display.flip()
     pygame.quit()

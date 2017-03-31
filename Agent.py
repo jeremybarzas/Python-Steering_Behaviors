@@ -6,20 +6,20 @@ from Vector2 import Vector2
 class Agent(object):
     '''Agent object'''
 
-    def __init__(self, posx, posy, color):
+    def __init__(self, posx, posy, linecolor, blitcolor):
         '''constructor'''
         self.position = Vector2(posx, posy)
         self.velocity = Vector2(0, 0)
-        self.maxvelocity = 200
+        self.maxvelocity = 750
         self.heading = Vector2(0, 0)
         self.forces = []
         self.previousforces = []
         self.surface = pygame.Surface((20, 20))
         sur = self.surface
-        sur.fill((0, 0, 0))
+        sur.fill(blitcolor)
         currpos = Vector2(sur.get_width() / 2, sur.get_height() / 2)
         points = [(currpos[0] - 1, currpos[1] - 6), (currpos[0] - 6, currpos[1] + 4), (currpos[0] + 4, currpos[1] + 4)]
-        pygame.draw.polygon(self.surface, color, points, 2)
+        pygame.draw.polygon(self.surface, linecolor, points, 2)
 
     def seek(self, target):
         '''seek the target'''
