@@ -13,17 +13,15 @@ def main():
     red = (255, 0, 0)
     green = (0, 255, 0)
     blue = (0, 0, 255)
-    pink = (255, 0, 255)
     black = (0, 0, 0)
     white = (255, 255, 255)
-    gray = (125, 125, 125)
     bgcolor = (65, 65, 255)
-    darkgray = (25, 25, 25)
+    linecolor = (255, 0, 255)
     screen_width = 800
     screen_height = 600
     screen = pygame.display.set_mode((screen_width, screen_height))
     # agent to be used
-    testagent = Agent((screen_width / 2), (screen_height / 2), pink, darkgray)
+    testagent = Agent((screen_width / 2), (screen_height / 2), linecolor, black)
     # varaibles for while loop
     clock = pygame.time.Clock()
     done = False
@@ -70,11 +68,11 @@ def main():
         myfont = pygame.font.SysFont("timesnewroman", 28)
         myfont.set_bold(True)
         # set text of each label to be drawn
-        fleelabel = myfont.render("Rightclick = Flee", 1, black)
-        seeklabel = myfont.render("Leftclick = Seek", 1, black)
-        wanderlabel = myfont.render("Middleclick = Wander", 1, black)
-        stoplabel = myfont.render("Spacebar = Stop", 1, black)
-        fpslabel = myfont.render("FPS: " + str(clock.get_fps()), 1, black)
+        fleelabel = myfont.render("Rightclick = Flee", 1, white)
+        seeklabel = myfont.render("Leftclick = Seek", 1, white)
+        wanderlabel = myfont.render("Middleclick = Wander", 1, white)
+        stoplabel = myfont.render("Spacebar = Stop", 1, white)
+        fpslabel = myfont.render("FPS: " + str(clock.get_fps()), 1, white)
         # draw text to screen
         screen.blit(fleelabel, (15, 10))
         screen.blit(seeklabel, (15, 40))
