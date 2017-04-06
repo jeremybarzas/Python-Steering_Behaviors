@@ -24,6 +24,9 @@ class Agent(object):
         pygame.draw.polygon(self.surface, linecolor, points, 2)
         self.wanderangle = math.pi
         self.previousangle = math.pi
+        self.center_circle = self.position
+        self.displacement = Vector2(0, 0)
+        self.wandertemp = Vector2(0, 0)
 
     def updateagent(self, deltatime):
         ''' update the agent '''
@@ -60,22 +63,17 @@ class Agent(object):
 
     def wander(self, distance, radius):
         ''' wander around aimlessly '''
-        center_circle = self.velocity.normalise()
-        center_circle = center_circle * distance
-        displacement = Vector2(0, 1) * radius
-
-        # kakalate delta angle
+        self.center_circle = self.velocity.normalise()
+        self.center_circle = self.center_circle * distance
+        self.displacement = Vector2(0, 1) * radius
         deltaangle = self.previousangle - self.wanderangle
-        # kakalate new angle
         newangle = (random.randrange(0.0, 1.0) * deltaangle) - (deltaangle * .5)
-        # store new angle in previous angle
         self.previousangle = newangle
-        # set wander angle
         self.wanderangle += newangle
-
-        displacement.setx(math.cos(self.wanderangle) * displacement.magnitude())
-        displacement.sety(math.sin(self.wanderangle) * displacement.magnitude())
-        wanderforce = center_circle + displacement
+        self.displacement.setx(math.cos(self.wanderangle) * self.displacement.magnitude())
+        self.displacement.sety(math.sin(self.wanderangle) * self.displacement.magnitude())
+        wanderforce = self.center_circle + self.displacement
+        self.wandertemp = wanderforce
         return wanderforce
 
     def clear_force(self):
@@ -112,6 +110,14 @@ class Agent(object):
         newsurf = pygame.transform.rotate(self.surface, -angle)
         # blit agent onto surface
         surface.blit(newsurf, (int(currpos.getx()), int(currpos.gety())))
+
+    def drawwander(self, surface):
+        '''used to draw wander circle and lines'''
+        temp = self.position + self.wandertemp
+        temp2 = self.position + self.displacement
+        pygame.draw.line(surface, (255, 0, 0), (self.position.getx(), self.position.gety()), (temp.getx(), temp.gety()), 2)
+        pygame.draw.line(surface, (0, 255, 0), (temp.getx(), temp.gety()), (temp2.getx(), temp2.gety()), 2)
+        pygame.draw.line(surface, (0, 0, 125), (self.position.getx(), self.position.gety()), (temp2.getx(), temp2.gety()), 2)
 
 
 if __name__ == '__main__':

@@ -65,8 +65,7 @@ def main():
         # draw agent to screen
         testagent.draw(screen)
         # create font to be used in drawing text to the screen
-        myfont = pygame.font.SysFont("timesnewroman", 28)
-        myfont.set_bold(True)
+        myfont = pygame.font.SysFont("timesnewroman", 30)
         # set text of each label to be drawn
         fleelabel = myfont.render("Rightclick = Flee", 1, white)
         seeklabel = myfont.render("Leftclick = Seek", 1, white)
@@ -85,8 +84,9 @@ def main():
         if rightclick:
             testagent.add_force(testagent.flee(fleetarget))
         if middleclick:
-            testagent.add_force(testagent.wander(500, 300) * 33)
-        # apply forces calcualated by steering behaviors
+            testagent.add_force(testagent.wander(50, 30) * 300)
+            testagent.drawwander(screen)
+        # update agents values
         testagent.updateagent(delta)
         testagent.clear_force()
         # update function
