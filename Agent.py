@@ -18,6 +18,7 @@ class Agent(object):
         self.force = Vector2(0, 0)
         self.forces = []
         self.surface = pygame.Surface((20, 20))
+        self.surface.fill(blitcolor)
         surfacepos = Vector2(self.surface.get_width() / 2, self.surface.get_height() / 2)
         points = [(surfacepos[0] - 1, surfacepos[1] - 6), (surfacepos[0] - 6, surfacepos[1] + 4), (surfacepos[0] + 4, surfacepos[1] + 4)]
         pygame.draw.polygon(self.surface, linecolor, points, 2)

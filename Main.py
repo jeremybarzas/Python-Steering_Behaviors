@@ -17,8 +17,8 @@ def main():
     black = (0, 0, 0)
     white = (255, 255, 255)
     gray = (125, 125, 125)
-    bgcolor = (75, 75, 255)
-    darkgray = (15, 15, 15)
+    bgcolor = (65, 65, 255)
+    darkgray = (25, 25, 25)
     screen_width = 800
     screen_height = 600
     screen = pygame.display.set_mode((screen_width, screen_height))
@@ -66,11 +66,22 @@ def main():
         screen.fill(bgcolor)
         # draw agent to screen
         testagent.draw(screen)
-        myfont = pygame.font.SysFont("monospace", 19)
+        # create font to be used in drawing text to the screen
+        myfont = pygame.font.SysFont("timesnewroman", 28)
         myfont.set_bold(True)
-        label = myfont.render("Rightclick = Flee   Leftclick = Seek   Middleclick = Wander", 1, (0, 0 ,0))
-        screen.blit(label, (40, 10))
-        # logic to control wether it seeks or flees
+        # set text of each label to be drawn
+        fleelabel = myfont.render("Rightclick = Flee", 1, black)
+        seeklabel = myfont.render("Leftclick = Seek", 1, black)
+        wanderlabel = myfont.render("Middleclick = Wander", 1, black)
+        stoplabel = myfont.render("Spacebar = Stop", 1, black)
+        fpslabel = myfont.render("FPS: " + str(clock.get_fps()), 1, black)
+        # draw text to screen
+        screen.blit(fleelabel, (15, 10))
+        screen.blit(seeklabel, (15, 40))
+        screen.blit(wanderlabel, (15, 70))
+        screen.blit(stoplabel, (15, 100))
+        screen.blit(fpslabel, (15, 550))
+        # logic to control wether it seeks, flees, or wanders
         if leftclick:
             testagent.add_force(testagent.seek(seektarget))
         if rightclick:
