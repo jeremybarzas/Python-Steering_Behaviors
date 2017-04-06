@@ -13,16 +13,17 @@ class Agent(object):
         self.position = Vector2(posx, posy)
         self.acceleration = Vector2(0, 0)
         self.velocity = Vector2(0, 0)
-        self.maxvelocity = 250
+        self.maxvelocity = 300
         self.heading = Vector2(0, 0)
         self.force = Vector2(0, 0)
         self.forces = []
-        self.previousforces = []
         self.surface = pygame.Surface((20, 20))
         surfacepos = Vector2(self.surface.get_width() / 2, self.surface.get_height() / 2)
         points = [(surfacepos[0] - 1, surfacepos[1] - 6), (surfacepos[0] - 6, surfacepos[1] + 4), (surfacepos[0] + 4, surfacepos[1] + 4)]
         pygame.draw.polygon(self.surface, linecolor, points, 2)
-        self.wanderangle = math.pi/2.0
+
+        self.wanderangle = math.pi
+        self.previousangle = math.pi
 
     def updateagent(self, deltatime):
         ''' update the agent '''
@@ -61,15 +62,19 @@ class Agent(object):
         ''' wander around aimlessly '''
         center_circle = self.velocity.normalise()
         center_circle = center_circle * distance
-
         displacement = Vector2(0, 1) * radius
 
-
-        self.wanderangle += (random.randrange(0.0, 1.0) * 1) - (1 * .5)
+        # kakalate delta angle
+        deltaangle = self.previousangle - self.wanderangle
+        # kakalate new angle
+        newangle = (random.randrange(0.0, 1.0) * deltaangle) - (deltaangle * .5)
+        # store new angle in previous angle
+        self.previousangle = newangle
+        # set wander angle
+        self.wanderangle += newangle
 
         displacement.setx(math.cos(self.wanderangle) * displacement.magnitude())
         displacement.sety(math.sin(self.wanderangle) * displacement.magnitude())
-
         wanderforce = center_circle + displacement
         return wanderforce
 
@@ -98,7 +103,6 @@ class Agent(object):
     def draw(self, surface):
         ''' draws agent to screen as triangle '''
         currpos = self.position
-        # self.heading = self.velocity.normalise()
         angle = math.atan2(self.heading.gety(), self.heading.getx()) * 180 / math.pi
         if angle < 0:
             angle = 360 + angle
