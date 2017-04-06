@@ -103,12 +103,15 @@ class Agent(object):
 
     def draw(self, surface):
         ''' draws agent to screen as triangle '''
+        #  get agent current position
         currpos = self.position
+        # calculate the turn angle
         angle = math.atan2(self.heading.gety(), self.heading.getx()) * 180 / math.pi
         if angle < 0:
             angle = 360 + angle
         print self.heading.gety(), ',', self.heading.getx()
         newsurf = pygame.transform.rotate(self.surface, -angle)
+        # blit agent onto surface
         surface.blit(newsurf, (int(currpos.getx()), int(currpos.gety())))
 
 
