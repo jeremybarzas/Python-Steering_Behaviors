@@ -3,7 +3,10 @@
 import pygame
 import math
 import random
-from Vector2 import Vector2
+from Vector2 import *
+from Seek import *
+from Flee import *
+from Wander import *
 
 class Agent(object):
     '''Agent object'''
@@ -13,20 +16,23 @@ class Agent(object):
         self.position = Vector2(posx, posy)
         self.acceleration = Vector2(0, 0)
         self.velocity = Vector2(0, 0)
-        self.maxvelocity = 300
+        self.maxvelocity = 400
         self.heading = Vector2(0, 0)
         self.force = Vector2(0, 0)
         self.forces = []
+        # Drawing variables
         self.surface = pygame.Surface((20, 20))
         self.surface.fill(blitcolor)
-        surfacepos = Vector2(self.surface.get_width() / 2, self.surface.get_height() / 2)
-        points = [(surfacepos[0] - 1, surfacepos[1] - 6), (surfacepos[0] - 6, surfacepos[1] + 4), (surfacepos[0] + 4, surfacepos[1] + 4)]
-        pygame.draw.polygon(self.surface, linecolor, points, 2)
-        self.wanderangle = math.pi
-        self.previousangle = math.pi
-        self.center_circle = self.position
-        self.displacement = Vector2(0, 0)
-        self.wandertemp = Vector2(0, 0)
+        self.surfacepos = Vector2(self.surface.get_width() / 2, self.surface.get_height() / 2)
+        # points = [(self.surfacepos[0] - 1, self.surfacepos[1] - 6), (self.surfacepos[0] - 6, self.surfacepos[1] + 4), (self.surfacepos[0] + 4, self.surfacepos[1] + 4)]
+        # pygame.draw.polygon(self.surface, linecolor, points, 1)
+        pygame.draw.line(self.surface, linecolor, (self.surface.get_width() * .25, self.surface.get_width() * .5), (self.surface.get_width() *.75, self.surface.get_height() * .5), 1)
+        pygame.draw.line(self.surface, linecolor, (self.surface.get_width() * .75, self.surface.get_height() * .5), (self.surface.get_width() * .5, self.surface.get_width() * .25), 1)
+        pygame.draw.line(self.surface, linecolor, (self.surface.get_width() * .75, self.surface.get_height() * .5), (self.surface.get_width() * .5, self.surface.get_width() * .75), 1)
+        # Behavior objects
+        self.seek = Seek()
+        self.flee = Flee()
+        self.wander = Wander()
 
     def updateagent(self, deltatime):
         ''' update the agent '''
@@ -42,39 +48,17 @@ class Agent(object):
         ''' add a force to the agents velocity '''
         self.force += force
 
-    def seek(self, target):
+    def seekit(self, target):
         '''seek the target'''
-        currentvelocity = self.velocity
-        displacement = target - self.position
-        directiontotarget = displacement.normalise()
-        newvelocity = directiontotarget * self.maxvelocity
-        seekforce = newvelocity - currentvelocity
-        return seekforce
+        return self.seek.seek(self, target)
 
-    def flee(self, target):
+    def fleefrom(self, target):
         '''flee the target'''
-        currentvelocity = self.velocity
-        displacement = target - self.position
-        directiontotarget = displacement.normalise()
-        newvelocity = directiontotarget * self.maxvelocity
-        seekforce = newvelocity - currentvelocity
-        fleeforce = seekforce * -1
-        return fleeforce
+        return self.flee.flee(self, target)
 
-    def wander(self, distance, radius):
+    def wandering(self, distance, radius):
         ''' wander around aimlessly '''
-        self.center_circle = self.velocity.normalise()
-        self.center_circle = self.center_circle * distance
-        self.displacement = Vector2(0, 1) * radius
-        deltaangle = self.previousangle - self.wanderangle
-        newangle = (random.randrange(0.0, 1.0) * deltaangle) - (deltaangle * .5)
-        self.previousangle = newangle
-        self.wanderangle += newangle
-        self.displacement.setx(math.cos(self.wanderangle) * self.displacement.magnitude())
-        self.displacement.sety(math.sin(self.wanderangle) * self.displacement.magnitude())
-        wanderforce = self.center_circle + self.displacement
-        self.wandertemp = wanderforce
-        return wanderforce
+        return self.wander.wander(self, distance, radius)
 
     def clear_force(self):
         ''' clear the force '''
@@ -100,24 +84,16 @@ class Agent(object):
 
     def draw(self, surface):
         ''' draws agent to screen as triangle '''
-        #  get agent current position
+        # get agent current position
         currpos = self.position
         # calculate the turn angle
         angle = math.atan2(self.heading.gety(), self.heading.getx()) * 180 / math.pi
         if angle < 0:
             angle = 360 + angle
-        print self.heading.gety(), ',', self.heading.getx()
+        # make a new surface based on turn angle
         newsurf = pygame.transform.rotate(self.surface, -angle)
         # blit agent onto surface
         surface.blit(newsurf, (int(currpos.getx()), int(currpos.gety())))
-
-    def drawwander(self, surface):
-        '''used to draw wander circle and lines'''
-        temp = self.position + self.wandertemp
-        temp2 = self.position + self.displacement
-        pygame.draw.line(surface, (255, 0, 0), (self.position.getx(), self.position.gety()), (temp.getx(), temp.gety()), 2)
-        pygame.draw.line(surface, (0, 255, 0), (temp.getx(), temp.gety()), (temp2.getx(), temp2.gety()), 2)
-        pygame.draw.line(surface, (0, 0, 125), (self.position.getx(), self.position.gety()), (temp2.getx(), temp2.gety()), 2)
 
 
 if __name__ == '__main__':
