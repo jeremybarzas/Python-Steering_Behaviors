@@ -24,8 +24,6 @@ class Agent(object):
         self.surface = pygame.Surface((20, 20))
         self.surface.fill(blitcolor)
         self.surfacepos = Vector2(self.surface.get_width() / 2, self.surface.get_height() / 2)
-        # points = [(self.surfacepos[0] - 1, self.surfacepos[1] - 6), (self.surfacepos[0] - 6, self.surfacepos[1] + 4), (self.surfacepos[0] + 4, self.surfacepos[1] + 4)]
-        # pygame.draw.polygon(self.surface, linecolor, points, 1)
         pygame.draw.line(self.surface, linecolor, (self.surface.get_width() * .25, self.surface.get_width() * .5), (self.surface.get_width() *.75, self.surface.get_height() * .5), 1)
         pygame.draw.line(self.surface, linecolor, (self.surface.get_width() * .75, self.surface.get_height() * .5), (self.surface.get_width() * .5, self.surface.get_width() * .25), 1)
         pygame.draw.line(self.surface, linecolor, (self.surface.get_width() * .75, self.surface.get_height() * .5), (self.surface.get_width() * .5, self.surface.get_width() * .75), 1)
