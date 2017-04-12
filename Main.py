@@ -37,6 +37,7 @@ def main():
     middleclick = False
     test = False
     while not done:
+        # set delta time
         delta = clock.tick(30) / 1000.0
         # checking events that happen
         for event in pygame.event.get():  # User did something
