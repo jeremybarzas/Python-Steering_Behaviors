@@ -1,14 +1,18 @@
 ''' The wander behavior '''
 
-import pygame
+from decimal import *
 import math
 import random
+import pygame
 from Vector2 import Vector2
+
 
 class Wander(object):
     ''' The wander behavior '''
+
     def __init__(self):
         ''' constructor '''
+        setcontext(Context(prec=15, rounding=ROUND_DOWN))
         self.wanderangle = math.pi
         self.previousangle = math.pi
         self.center_circle = Vector2(0, 0)
@@ -21,9 +25,19 @@ class Wander(object):
         self.center_circle = self.center_circle * distance
         self.displacement = Vector2(0, 1) * radius
         deltaangle = self.previousangle - self.wanderangle
-        newangle = (random.randrange(0.0, 1.0) * deltaangle) - (deltaangle * .5)
+        newrandom = random.randrange(0.0, 1.0)
+        newangle = (newrandom * deltaangle) - (deltaangle * .5)
         self.previousangle = newangle
-        self.wanderangle += newangle
+        self.wanderangle = self.wanderangle + newangle
+
+        # ========== DEBUG STUFF ==========
+        print "wander angle: ", self.wanderangle
+
+        # this makes the math domain error not occur
+        if self.wanderangle == float("inf"):
+            self.wanderangle = math.pi
+            self.previousangle = math.pi
+
         self.displacement.setx(math.cos(self.wanderangle) * self.displacement.magnitude())
         self.displacement.sety(math.sin(self.wanderangle) * self.displacement.magnitude())
         wanderforce = self.center_circle + self.displacement
@@ -34,5 +48,7 @@ class Wander(object):
         '''used to draw wander circle and lines'''
         circle_center = agent.position + self.wandertemp
         displacement = circle_center + self.displacement
-        pygame.draw.line(surface, (255, 255, 255), (agent.position.getx(), agent.position.gety()), (circle_center.getx(), circle_center.gety()), 2)
-        pygame.draw.line(surface, (0, 0, 0), (circle_center.getx(), circle_center.gety()), (displacement.getx(), displacement.gety()), 2)
+        pygame.draw.line(surface, (255, 255, 255), (agent.position.getx(
+        ), agent.position.gety()), (circle_center.getx(), circle_center.gety()), 2)
+        pygame.draw.line(surface, (0, 0, 0), (circle_center.getx(
+        ), circle_center.gety()), (displacement.getx(), displacement.gety()), 2)

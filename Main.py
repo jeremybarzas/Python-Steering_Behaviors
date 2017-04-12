@@ -37,7 +37,7 @@ def main():
     middleclick = False
     test = False
     while not done:
-        delta = clock.tick(60) / 1000.0
+        delta = clock.tick(30) / 1000.0
         # checking events that happen
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
