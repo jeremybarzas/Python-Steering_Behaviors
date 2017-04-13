@@ -11,26 +11,27 @@ from Wander import *
 class Agent(object):
     '''Agent object'''
 
-    def __init__(self, posx, posy, linecolor, blitcolor):
+    def __init__(self, linecolor, blitcolor, surface):
         '''constructor'''
-        self.position = Vector2(posx, posy)
+        self.position = Vector2(surface.get_width() / 2, surface.get_height() / 2)
         self.acceleration = Vector2(0, 0)
         self.velocity = Vector2(0, 0)
         self.maxvelocity = 400
         self.heading = Vector2(0, 0)
         self.force = Vector2(0, 0)
         self.forces = []
+        # Behavior objects
+        self.seek = Seek()
+        self.flee = Flee()
+        self.wander = Wander()
         # Drawing variables
+        self.bgsurface = surface
         self.surface = pygame.Surface((20, 20))
         self.surface.fill(blitcolor)
         self.surfacepos = Vector2(self.surface.get_width() / 2, self.surface.get_height() / 2)
         pygame.draw.line(self.surface, linecolor, (self.surface.get_width() * .25, self.surface.get_width() * .5), (self.surface.get_width() *.75, self.surface.get_height() * .5), 1)
         pygame.draw.line(self.surface, linecolor, (self.surface.get_width() * .75, self.surface.get_height() * .5), (self.surface.get_width() * .5, self.surface.get_width() * .25), 1)
         pygame.draw.line(self.surface, linecolor, (self.surface.get_width() * .75, self.surface.get_height() * .5), (self.surface.get_width() * .5, self.surface.get_width() * .75), 1)
-        # Behavior objects
-        self.seek = Seek()
-        self.flee = Flee()
-        self.wander = Wander()
 
     def updateagent(self, deltatime):
         ''' update the agent '''
@@ -41,22 +42,29 @@ class Agent(object):
             self.velocity = self.velocity.normalise() * self.maxvelocity
         self.position += self.velocity * deltatime
         self.heading = self.velocity.normalise()
+        self.clear_force()
 
     def add_force(self, force):
         ''' add a force to the agents velocity '''
         self.force += force
 
-    def seekit(self, target):
+    def seekit(self, target, mult):
         '''seek the target'''
-        return self.seek.seek(self, target)
+        seekforce = self.seek.seek(self, target)
+        self.add_force(seekforce * mult)
+        self.seek.draw(self, target, self.bgsurface)
 
-    def fleefrom(self, target):
+    def fleefrom(self, target, mult):
         '''flee the target'''
-        return self.flee.flee(self, target)
+        fleeforce = self.flee.flee(self, target)
+        self.add_force(fleeforce * mult)
+        self.flee.draw(self, target, self.bgsurface)
 
-    def wandering(self, distance, radius):
+    def wandering(self, distance, radius, mult):
         ''' wander around aimlessly '''
-        return self.wander.wander(self, distance, radius)
+        wanderforce = self.wander.wander(self, distance, radius)
+        self.add_force(wanderforce * mult)
+        self.wander.draw(self, self.bgsurface)
 
     def clear_force(self):
         ''' clear the force '''
@@ -93,6 +101,11 @@ class Agent(object):
         # blit agent onto surface
         surface.blit(newsurf, (int(currpos.getx()), int(currpos.gety())))
 
+    def randompos(self):
+        '''randomize agent position'''
+        num1 = random.randrange(100, (self.bgsurface.get_width() - 100))
+        num2 = random.randrange(100, (self.bgsurface.get_height() - 100))
+        self.position = Vector2(num1, num2)
 
 if __name__ == '__main__':
     import Main

@@ -5,6 +5,28 @@ import random
 from Agent import Agent
 from Vector2 import Vector2
 
+def drawtext(screen, clock):
+    '''draw text to screen'''
+    white = (255, 255, 255)
+    # create font to be used in drawing text to the screen
+    myfont = pygame.font.SysFont("timesnewroman", 23)
+    # set text of each label to be drawn
+    fleelabel = myfont.render("Rightclick = Flee Behavior", 1, white)
+    seeklabel = myfont.render("Leftclick = Seek Behavior", 1, white)
+    wanderlabel = myfont.render("Middleclick = Wander Behavior", 1, white)
+    testlabel = myfont.render("a = All Behaviors", 1, white)
+    restartlabel = myfont.render("r = Restart", 1, white)
+    stoplabel = myfont.render("Spacebar = Stop", 1, white)
+    fpslabel = myfont.render("FPS: " + str(clock.get_fps()), 1, white)
+    # draw text to screen
+    screen.blit(fleelabel, (15, 10))
+    screen.blit(seeklabel, (15, 40))
+    screen.blit(wanderlabel, (15, 70))
+    screen.blit(testlabel, (15, 100))
+    screen.blit(restartlabel, (15, 130))
+    screen.blit(stoplabel, (15, 160))
+    screen.blit(fpslabel, (15, 550))
+
 def main():
     '''unit test'''
     pygame.init()
@@ -21,21 +43,20 @@ def main():
     screen_width = 800
     screen_height = 600
     screen = pygame.display.set_mode((screen_width, screen_height))
-    # agent(s) to be used
-    testagent = Agent((screen_width / 2), (screen_height / 2), linecolor, black)
-    #  multiple agents
+    # create a single agent to be used to test
+    testagent = Agent(linecolor, black, screen)
+    # multiple agents
     agents = []
     for i in range(0, 6):
-        num1 = random.randrange(200, (screen_width - 200))
-        num2 = random.randrange(200, (screen_height - 200))
-        agents.append(Agent(num1, num2, linecolor, black))
+        agents.append(Agent(linecolor, black, screen))
+        agents[i].randompos()
     # varaibles for while loop
     clock = pygame.time.Clock()
-    done = False
     leftclick = False
     rightclick = False
     middleclick = False
     test = False
+    done = False
     while not done:
         # set delta time
         delta = clock.tick(30) / 1000.0
@@ -77,7 +98,7 @@ def main():
                     for agent in agents:
                         agent.velocity = Vector2(0, 0)
                 if event.key == pygame.K_r:
-                    testagent = Agent((screen_width / 2), (screen_height / 2), linecolor, black)
+                    testagent = Agent(linecolor, black, screen)
                     leftclick = False
                     rightclick = False
                     middleclick = False
@@ -85,9 +106,8 @@ def main():
                     # multiple agents
                     agents = []
                     for i in range(0, 6):
-                        num1 = random.randrange(10, (screen_width - 10))
-                        num2 = random.randrange(10, (screen_height - 10))
-                        agents.append(Agent(num1, num2, linecolor, black))
+                        agents.append(Agent(linecolor, black, screen))
+                        agents[i].randompos()
                 if event.key == pygame.K_a:
                     leftclick = False
                     rightclick = False
@@ -100,70 +120,45 @@ def main():
         # multiple agents
         for agent in agents:
             agent.draw(screen)
-        # create font to be used in drawing text to the screen
-        myfont = pygame.font.SysFont("timesnewroman", 23)
-        # set text of each label to be drawn
-        fleelabel = myfont.render("Rightclick = Flee Behavior", 1, white)
-        seeklabel = myfont.render("Leftclick = Seek Behavior", 1, white)
-        wanderlabel = myfont.render("Middleclick = Wander Behavior", 1, white)
-        testlabel = myfont.render("a = All Behaviors", 1, white)
-        restartlabel = myfont.render("r = Restart", 1, white)
-        stoplabel = myfont.render("Spacebar = Stop", 1, white)
-        fpslabel = myfont.render("FPS: " + str(clock.get_fps()), 1, white)
-        # draw text to screen
-        screen.blit(fleelabel, (15, 10))
-        screen.blit(seeklabel, (15, 40))
-        screen.blit(wanderlabel, (15, 70))
-        screen.blit(testlabel, (15, 100))
-        screen.blit(restartlabel, (15, 130))
-        screen.blit(stoplabel, (15, 160))
-        screen.blit(fpslabel, (15, 550))
-        # logic to control wether it seeks, flees, or wanders
+        # draw text to the screen
+        drawtext(screen, clock)
+        # logic to control wether the agent(s) seek, flee, or wanders
         if leftclick:
-            testagent.add_force(testagent.seekit(seektarget))
-            testagent.seek.draw(testagent, seektarget, screen)
+            # seek function being invoked on a single agent
+            testagent.seekit(seektarget, 1)
             # multiple agents
             for agent in agents:
-                agent.add_force(agent.seekit(seektarget))
-                agent.seek.draw(agent, seektarget, screen)
+                agent.seekit(seektarget, 1)
         if rightclick:
-            testagent.add_force(testagent.fleefrom(fleetarget))
-            testagent.flee.draw(testagent, fleetarget, screen)
+            # flee function being invoked on a single agent
+            testagent.fleefrom(fleetarget, 1)
             # multiple agents
             for agent in agents:
-                agent.add_force(agent.fleefrom(fleetarget))
-                agent.flee.draw(agent, fleetarget, screen)
+                agent.fleefrom(fleetarget, 1)
         if middleclick:
-            testagent.add_force(testagent.wandering(50, 30) * 300)
-            testagent.wander.draw(testagent, screen)
+            # wander function being invoked on a single agent
+            testagent.wandering(50, 30, 300)
             # multiple agents
             for agent in agents:
-                agent.add_force(agent.wandering(50, 30) * 300)
-                agent.wander.draw(agent, screen)
+                agent.wandering(50, 30, 300)
         if test:
+            # store mouse position to be used as target
             mousepos = pygame.mouse.get_pos()
             target = Vector2(mousepos[0], mousepos[1])
-            testagent.add_force(testagent.seekit(target) * 10)
-            testagent.add_force(testagent.fleefrom(target))
-            testagent.add_force(testagent.wandering(50, 30) * 300)
-            testagent.seek.draw(testagent, target, screen)
-            testagent.flee.draw(testagent, target, screen)
-            testagent.wander.draw(testagent, screen)
+            # seek, flee, and wander functions being invoked at once on a single agent
+            testagent.seekit(target, 10)
+            testagent.fleefrom(target, 1)
+            testagent.wandering(50, 30, 300)
             # multiple agents
             for agent in agents:
-                agent.add_force(agent.seekit(target) * 10)
-                agent.add_force(agent.fleefrom(target))
-                agent.add_force(agent.wandering(50, 30) * 300)
-                agent.seek.draw(agent, target, screen)
-                agent.flee.draw(agent, target, screen)
-                agent.wander.draw(agent, screen)
-        # update agent(s) values
+                agent.seekit(target, 10)
+                agent.fleefrom(target, 1)
+                agent.wandering(50, 30, 300)
+        # update a single agent
         testagent.updateagent(delta)
-        testagent.clear_force()
         # multiple agents
         for agent in agents:
             agent.updateagent(delta)
-            agent.clear_force()
         # update function
         pygame.display.flip()
     pygame.quit()
