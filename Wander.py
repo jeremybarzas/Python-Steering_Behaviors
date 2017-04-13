@@ -1,6 +1,5 @@
 ''' The wander behavior '''
 
-from decimal import *
 import math
 import random
 import pygame
@@ -12,7 +11,6 @@ class Wander(object):
 
     def __init__(self):
         ''' constructor '''
-        setcontext(Context(prec=15, rounding=ROUND_DOWN))
         self.wanderangle = math.pi
         self.previousangle = math.pi
         self.center_circle = Vector2(0, 0)
@@ -48,7 +46,5 @@ class Wander(object):
         '''used to draw wander circle and lines'''
         circle_center = agent.position + self.wandertemp
         displacement = circle_center + self.displacement
-        pygame.draw.line(surface, (255, 255, 255), (agent.position.getx(
-        ), agent.position.gety()), (circle_center.getx(), circle_center.gety()), 2)
-        pygame.draw.line(surface, (0, 0, 0), (circle_center.getx(
-        ), circle_center.gety()), (displacement.getx(), displacement.gety()), 2)
+        pygame.draw.line(surface, (255, 255, 255), (agent.position.getx(), agent.position.gety()), (circle_center.getx(), circle_center.gety()), 2)
+        pygame.draw.line(surface, (0, 0, 0), (circle_center.getx(), circle_center.gety()), (displacement.getx(), displacement.gety()), 2)
